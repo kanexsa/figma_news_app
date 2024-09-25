@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "134194113647",
+    "project_id": "figma-news-app",
+    "storage_bucket": "figma-news-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:134194113647:android:abd5f375679248f782f19a",
+        "android_client_info": {
+          "package_name": "com.example.figma_news_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9HZnvuwkezu3175GAEMaqROs-wWJGX8Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
