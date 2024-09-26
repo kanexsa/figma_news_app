@@ -3,6 +3,7 @@ import 'package:figma_news_app/core/routes/app_routes.dart';
 import 'package:figma_news_app/core/utils/app_sizes.dart';
 import 'package:figma_news_app/core/utils/app_texts.dart';
 import 'package:figma_news_app/core/utils/image_paths.dart';
+import 'package:figma_news_app/core/utils/page_transition_duration.dart';
 import 'package:figma_news_app/core/widgets/background_container.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +22,7 @@ class _SplashViewState extends State<SplashView> {
   }
 
   _navigateToOnboarding() async {
-    await Future.delayed(const Duration(seconds: 3), () {});
+    await Future.delayed(PageTransitionDuration.long.duration, () {});
     Navigator.pushReplacementNamed(context, AppRoutes.onboard);
   }
 
