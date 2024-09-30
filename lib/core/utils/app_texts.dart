@@ -9,7 +9,7 @@ class AppTexts {
   static const String textSkip = "Skip";
   static const String signUpTitle = "Join us to start searching";
   static const String logSignDesc =
-      "You can search c ourse, apply course and find scholarship for abroad studies";
+      "You can search course, apply course and find scholarship for abroad studies";
   static const String googleText = "Google";
   static const String facebookText = "Facebook";
   static const String nameHintText = "Name";
@@ -18,4 +18,9 @@ class AppTexts {
   static const String privacyPolicy =
       "I agree with the Terms of Service & Privacy Policy";
   static const String haveAnAccountLogin = "Have an account? Log in";
+  static const String signUp = "Sign Up";
+  static const String loginTitle = "Welcome Back";
+  static const String login = "Login";
+  static const String forgotPassword = "Forgot Password";
+  static const String dontHaveAnAccount = "Don’t have an account? Join us";
 }

@@ -2,7 +2,6 @@ import 'package:figma_news_app/core/constants/app_palette.dart';
 import 'package:figma_news_app/core/routes/app_routes.dart';
 import 'package:figma_news_app/core/utils/app_sizes.dart';
 import 'package:figma_news_app/core/utils/app_texts.dart';
-import 'package:figma_news_app/core/utils/image_paths.dart';
 import 'package:figma_news_app/core/utils/onboard_enum.dart';
 import 'package:figma_news_app/core/utils/page_transition_duration.dart';
 import 'package:figma_news_app/core/widgets/background_container.dart';

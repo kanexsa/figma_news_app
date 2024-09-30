@@ -1,13 +1,22 @@
 import 'package:figma_news_app/core/routes/app_routes.dart';
 import 'package:figma_news_app/core/theme/app_theme.dart';
 import 'package:figma_news_app/firebase_options.dart';
+import 'package:figma_news_app/product/services/sign_up/sign_up_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SignUpProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
