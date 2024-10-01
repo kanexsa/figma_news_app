@@ -33,123 +33,125 @@ class _SignupViewState extends State<SignupView> {
 
     return Scaffold(
       body: BackgroundContainer(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            AppTexts.signUpTitle,
-            style: TextStyle(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              AppTexts.signUpTitle,
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: AppPalette.splashTitleBlackColor,
-                fontSize: AppSizes.splashTitleTextSize),
-          ),
-          const SizedBox(height: AppSizes.paddingLow),
-          const Padding(
-            padding:
-                EdgeInsets.symmetric(horizontal: AppSizes.onboardDescPadding),
-            child: DescText(descText: AppTexts.logSignDesc),
-          ),
-          const SizedBox(
-            height: AppSizes.paddingMedium,
-          ),
-          const SocialMediaRow(),
-          const SizedBox(
-            height: AppSizes.paddingMedium,
-          ),
-          CustomInputText(
-            labelText: AppTexts.nameHintText,
-            controller: _nameController,
-          ),
-          CustomInputText(
-            labelText: AppTexts.emailHintText,
-            controller: _emailController,
-          ),
-          CustomInputText(
-            controller: _passwordController,
-            labelText: AppTexts.passwordHintText,
-            suffixIcon: const Icon(Icons.password),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: AppSizes.paddingLow),
-            child: Row(
-              children: [
-                Checkbox(
-                  side: BorderSide.none,
-                  fillColor: WidgetStateProperty.all(AppPalette.greyColor),
-                  shape: const CircleBorder(),
-                  value: signUpProvider.isAgreed,
-                  onChanged: (value) {
-                    signUpProvider.toggleAgreement(value!);
-                  },
-                ),
-                const Text(
-                  AppTexts.privacyPolicy,
-                  style: TextStyle(
-                      fontSize: AppSizes.privacyPolicyTextSizes,
-                      color: AppPalette.greyColor),
-                )
-              ],
+                fontSize: AppSizes.splashTitleTextSize,
+              ),
             ),
-          ),
-          const SizedBox(
-            height: AppSizes.paddingMedium,
-          ),
-          signUpProvider.isLoading
-              ? Lottie.asset(
-                  ImagePaths.loading_animation,
-                  height: 100,
-                  width: 100,
-                )
-              : signUpProvider.isSuccess
-                  ? Lottie.asset(
-                      ImagePaths.success_animation,
-                      height: 100,
-                      width: 100,
-                    )
-                  : CustomButton(
-                      text: AppTexts.signUp,
-                      function: () async {
-                        signUpProvider.clearErrors();
-                        final errorMessage = signUpProvider.validateFields(
-                          _nameController.text,
-                          _emailController.text,
-                          _passwordController.text,
-                        );
-
-                        if (errorMessage != null) {
-                          signUpProvider.showErrorSnackbar(
-                              context, errorMessage);
-                          return;
-                        }
-
-                        try {
-                          Lottie.asset(ImagePaths.success_animation);
-                        } catch (e) {
-                          print("Animasyon yüklenirken hata oluştu: $e");
-                        }
-
-                        try {
-                          await signUpProvider.signUpWithEmailAndPassword(
-                            _emailController.text,
-                            _passwordController.text,
-                          );
-                          // Navigate to another screen or show a success message
-                        } catch (e) {
-                          signUpProvider.showErrorSnackbar(
-                              context, e.toString());
-                        }
-                      },
+            const SizedBox(height: AppSizes.paddingLow),
+            const Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: AppSizes.onboardDescPadding),
+              child: DescText(descText: AppTexts.logSignDesc),
+            ),
+            const SizedBox(height: AppSizes.paddingMedium),
+            const SocialMediaRow(),
+            const SizedBox(height: AppSizes.paddingMedium),
+            CustomInputText(
+              labelText: AppTexts.nameHintText,
+              controller: _nameController,
+            ),
+            CustomInputText(
+              labelText: AppTexts.emailHintText,
+              controller: _emailController,
+            ),
+            CustomInputText(
+              controller: _passwordController,
+              obscureText: signUpProvider.isPasswordObscured,
+              labelText: AppTexts.passwordHintText,
+              suffixIcon: InkWell(
+                  onTap: () {
+                    signUpProvider.togglePasswordVisibility();
+                  },
+                  child: Icon(
+                    signUpProvider.isPasswordObscured
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                  )),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppSizes.paddingLow),
+              child: Row(
+                children: [
+                  Checkbox(
+                    side: BorderSide.none,
+                    fillColor: WidgetStateProperty.all(AppPalette.greyColor),
+                    shape: const CircleBorder(),
+                    value: signUpProvider.isAgreed,
+                    onChanged: (value) {
+                      signUpProvider.toggleAgreement(value!);
+                    },
+                  ),
+                  const Text(
+                    AppTexts.privacyPolicy,
+                    style: TextStyle(
+                      fontSize: AppSizes.privacyPolicyTextSizes,
+                      color: AppPalette.greyColor,
                     ),
-          CustomTextButton(
-            titleText: AppTexts.haveAnAccountLogin,
-            textColor: AppPalette.greenColor,
-            function: () {
-              Navigator.pushReplacementNamed(context, AppRoutes.login);
-            },
-          )
-        ],
-      )),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSizes.paddingMedium),
+            if (signUpProvider.isLoading)
+              Lottie.asset(
+                ImagePaths.loading_animation,
+                height: 100,
+                width: 100,
+              )
+            else if (signUpProvider.isSuccess)
+              Lottie.asset(
+                ImagePaths.success_animation,
+                height: 100,
+                width: 100,
+              )
+            else
+              CustomButton(
+                text: AppTexts.signUp,
+                function: () async {
+                  signUpProvider.clearErrors();
+                  final errorMessage = signUpProvider.validateFields(
+                    _nameController.text,
+                    _emailController.text,
+                    _passwordController.text,
+                  );
+
+                  if (errorMessage != null) {
+                    signUpProvider.showErrorSnackbar(context, errorMessage);
+                    return;
+                  }
+
+                  try {
+                    await signUpProvider.signUpWithEmailAndPassword(
+                      _emailController.text,
+                      _passwordController.text,
+                    );
+
+                    signUpProvider.clearAllFields(
+                        _nameController, _emailController, _passwordController);
+                    Navigator.pushReplacementNamed(context, AppRoutes.login);
+                  } catch (e) {
+                    signUpProvider.showErrorSnackbar(context, e.toString());
+                  }
+                },
+              ),
+            CustomTextButton(
+              titleText: AppTexts.haveAnAccountLogin,
+              textColor: AppPalette.greenColor,
+              function: () {
+                Navigator.pushReplacementNamed(context, AppRoutes.login);
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

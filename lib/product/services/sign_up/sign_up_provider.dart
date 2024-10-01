@@ -1,3 +1,4 @@
+import 'package:figma_news_app/core/utils/app_texts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -7,16 +8,13 @@ class SignUpProvider with ChangeNotifier {
   bool _isAgreed = false;
   bool _isLoading = false;
   bool _isSuccess = false;
-
-  String? _emailError;
-  String? _passwordError;
-  String? _nameError;
-  String? _agreementError;
+  bool _isPasswordObscured = true;
 
   User? get user => _user;
   bool get isAgreed => _isAgreed;
   bool get isLoading => _isLoading;
   bool get isSuccess => _isSuccess;
+  bool get isPasswordObscured => _isPasswordObscured;
 
   SignUpProvider() {
     _auth.authStateChanges().listen((user) {
@@ -32,16 +30,17 @@ class SignUpProvider with ChangeNotifier {
 
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-
+      _isLoading = false;
       _isSuccess = true;
       notifyListeners();
 
-      // Başarı animasyonunu 2 saniye göster
+      await _auth.currentUser?.sendEmailVerification();
+
       await Future.delayed(const Duration(seconds: 2));
-      _isSuccess = false; // Durumu sıfırla
+      _isSuccess = false;
       notifyListeners();
     } catch (e) {
-      throw "Kayıt işlemi başarısız. Lütfen tekrar deneyin.";
+      throw AppTexts.defaultSignUpError;
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -50,6 +49,11 @@ class SignUpProvider with ChangeNotifier {
 
   void toggleAgreement(bool value) {
     _isAgreed = value;
+    notifyListeners();
+  }
+
+  void togglePasswordVisibility() {
+    _isPasswordObscured = !_isPasswordObscured;
     notifyListeners();
   }
 
@@ -68,19 +72,19 @@ class SignUpProvider with ChangeNotifier {
   String? validateFields(String name, String email, String password) {
     clearErrors();
     if (name.isEmpty) {
-      return "Name cannot be empty.";
+      return AppTexts.nameError;
     }
     if (!isEmailValid(email)) {
-      return "Invalid email format.";
+      return AppTexts.validEmailError;
     }
     if (email.isEmpty) {
-      return "Email cannot be empty.";
+      return AppTexts.emailError;
     }
     if (password.isEmpty) {
-      return "Password cannot be empty.";
+      return AppTexts.passwordError;
     }
     if (!isAgreed) {
-      return "You must agree to the privacy policy.";
+      return AppTexts.privacyPolicyError;
     }
     return null;
   }
@@ -91,6 +95,17 @@ class SignUpProvider with ChangeNotifier {
       backgroundColor: Colors.red,
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void clearAllFields(
+      TextEditingController nameController,
+      TextEditingController emailController,
+      TextEditingController passwordController) {
+    nameController.clear();
+    emailController.clear();
+    passwordController.clear();
+    _isAgreed = false;
+    notifyListeners();
   }
 
   void clearErrors() {

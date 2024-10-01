@@ -8,11 +8,15 @@ class CustomInputText extends StatelessWidget {
     required this.labelText,
     this.suffixIcon,
     required this.controller,
+    this.obscureText,
+    this.errorText,
   });
 
   final String labelText;
-  final Icon? suffixIcon;
+  final Widget? suffixIcon;
   final TextEditingController controller;
+  final bool? obscureText;
+  final String? errorText;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +26,7 @@ class CustomInputText extends StatelessWidget {
           vertical: AppSizes.textInputVerPadding),
       child: TextField(
         controller: controller,
+        obscureText: obscureText ?? false,
         decoration: InputDecoration(
             suffixIcon: suffixIcon,
             filled: true,
@@ -32,7 +37,8 @@ class CustomInputText extends StatelessWidget {
                     fontSize: AppSizes.textInputTextSizes)),
             border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(
-                    Radius.circular(AppSizes.textInputRadius)))),
+                    Radius.circular(AppSizes.textInputRadius))),
+            errorText: errorText),
       ),
     );
   }
