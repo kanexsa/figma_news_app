@@ -26,7 +26,26 @@ class _LoginViewState extends State<LoginView> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _bottomSheetEmailController =
       TextEditingController();
+  final TextEditingController _bottomSheetPasswordController =
+      TextEditingController();
+  final TextEditingController _bottomSheetRePasswordController =
+      TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final List<TextEditingController> _codeControllers =
+      List.generate(4, (_) => TextEditingController());
+
+  @override
+  void dispose() {
+    super.dispose();
+    _emailController.dispose();
+    _bottomSheetEmailController.dispose();
+    _passwordController.dispose();
+    for (var controller in _codeControllers) {
+      controller.dispose();
+    }
+    _bottomSheetPasswordController.dispose();
+    _bottomSheetRePasswordController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,22 +153,187 @@ class _LoginViewState extends State<LoginView> {
                             bool emailExists =
                                 await loginProvider.checkEmailExists(email);
                             if (emailExists) {
-                              Navigator.pop(context);
-                              showModalBottomSheet(
-                                context: context,
-                                builder: (context) {
-                                  return const Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 24),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [],
-                                    ),
-                                  );
-                                },
-                              );
+                              try {
+                                await loginProvider.sendVerificationCode(email);
+                                Navigator.pop(context);
+                                _bottomSheetEmailController.clear();
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 24),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const TitleText(
+                                              titleText: AppTexts.enterDigit),
+                                          const SizedBox(height: 8.0),
+                                          const DescText(
+                                              descText:
+                                                  AppTexts.enterDigitDesc),
+                                          const SizedBox(height: 16.0),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              _buildCodeInputFields(context),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 12.0),
+                                          Center(
+                                            child: CustomButton(
+                                              text: AppTexts.continueText,
+                                              function: () async {
+                                                final enteredCode =
+                                                    _codeControllers
+                                                        .map((controller) =>
+                                                            controller.text)
+                                                        .join();
+
+                                                bool isVerified =
+                                                    await loginProvider
+                                                        .verifyCode(
+                                                            enteredCode);
+                                                if (isVerified) {
+                                                  Navigator.of(context).pop();
+
+                                                  for (var controller
+                                                      in _codeControllers) {
+                                                    controller.clear();
+                                                  }
+                                                  showModalBottomSheet(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal: 16,
+                                                                vertical: 24),
+                                                        child: Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            const TitleText(
+                                                                titleText: AppTexts
+                                                                    .resetPassword),
+                                                            const SizedBox(
+                                                              height: 8,
+                                                            ),
+                                                            const DescText(
+                                                                descText: AppTexts
+                                                                    .resetDescPassword),
+                                                            const SizedBox(
+                                                              height: 16,
+                                                            ),
+                                                            CustomInputText(
+                                                              labelText: AppTexts
+                                                                  .passwordHintText,
+                                                              controller:
+                                                                  _bottomSheetPasswordController,
+                                                              obscureText:
+                                                                  loginProvider
+                                                                      .isBottomSheetPasswordObscured,
+                                                              suffixIcon:
+                                                                  InkWell(
+                                                                onTap: () {
+                                                                  loginProvider
+                                                                      .toggleBottomSheetPasswordVisibility();
+                                                                },
+                                                                child: Icon(
+                                                                  loginProvider
+                                                                          .isBottomSheetPasswordObscured
+                                                                      ? Icons
+                                                                          .visibility_off
+                                                                      : Icons
+                                                                          .visibility,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 8,
+                                                            ),
+                                                            CustomInputText(
+                                                              labelText: AppTexts
+                                                                  .rePasswordHintText,
+                                                              controller:
+                                                                  _bottomSheetRePasswordController,
+                                                              obscureText:
+                                                                  loginProvider
+                                                                      .isBottomSheetPasswordObscured,
+                                                              suffixIcon:
+                                                                  InkWell(
+                                                                onTap: () {
+                                                                  loginProvider
+                                                                      .toggleBottomSheetPasswordVisibility();
+                                                                },
+                                                                child: Icon(
+                                                                  loginProvider
+                                                                          .isBottomSheetPasswordObscured
+                                                                      ? Icons
+                                                                          .visibility_off
+                                                                      : Icons
+                                                                          .visibility,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 12,
+                                                            ),
+                                                            Center(
+                                                              child:
+                                                                  CustomButton(
+                                                                text: AppTexts
+                                                                    .updatePassword,
+                                                                function:
+                                                                    () async {
+                                                                  final newPassword =
+                                                                      _bottomSheetPasswordController
+                                                                          .text;
+                                                                  final repassword =
+                                                                      _bottomSheetRePasswordController
+                                                                          .text;
+
+                                                                  await loginProvider.updatePassword(
+                                                                      newPassword,
+                                                                      repassword,
+                                                                      context);
+                                                                },
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
+                                                } else {
+                                                  loginProvider
+                                                      .showErrorSnackbar(
+                                                          context,
+                                                          AppTexts
+                                                              .failOTPVerify);
+                                                }
+                                              },
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              } catch (e) {
+                                loginProvider.showErrorSnackbar(
+                                    context, e.toString());
+                              }
+                            } else {
+                              loginProvider.showErrorSnackbar(
+                                  context, AppTexts.notFoundEmail);
                             }
                           },
                         ))
@@ -172,6 +356,51 @@ class _LoginViewState extends State<LoginView> {
           )
         ],
       )),
+    );
+  }
+
+  Widget _buildCodeInputFields(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: List.generate(
+          4,
+          (index) => Padding(
+                padding: const EdgeInsets.all(AppSizes.paddingLow),
+                child: _buildCodeInput(context, index),
+              )),
+    );
+  }
+
+  Widget _buildCodeInput(BuildContext context, int index) {
+    return Container(
+      width: 40,
+      height: 50,
+      decoration: BoxDecoration(
+        border: Border.all(color: AppPalette.greenColor),
+        borderRadius: BorderRadius.circular(AppSizes.paddingLow),
+      ),
+      child: TextField(
+        controller: _codeControllers[index],
+        keyboardType: TextInputType.number,
+        textAlign: TextAlign.center,
+        maxLength: 1,
+        style: const TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: AppPalette.greenColor,
+        ),
+        decoration: const InputDecoration(
+          counterText: "",
+          border: InputBorder.none,
+        ),
+        onChanged: (value) {
+          if (value.length == 1 && index < 3) {
+            FocusScope.of(context).nextFocus();
+          } else if (value.isEmpty && index > 0) {
+            FocusScope.of(context).previousFocus();
+          }
+        },
+      ),
     );
   }
 }

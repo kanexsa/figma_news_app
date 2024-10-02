@@ -1,4 +1,6 @@
+import 'package:email_otp/email_otp.dart';
 import 'package:figma_news_app/core/utils/app_texts.dart';
+import 'package:figma_news_app/core/widgets/custom_snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -7,12 +9,14 @@ class LoginProvider extends ChangeNotifier {
   User? _user;
   bool _isLoading = false;
   bool _isPasswordObscured = true;
+  bool _isBottomSheetPasswordObscured = true;
   String? _emailError;
   String? _passwordError;
 
   User? get user => _user;
   bool get isLoading => _isLoading;
   bool get isPasswordObscured => _isPasswordObscured;
+  bool get isBottomSheetPasswordObscured => _isBottomSheetPasswordObscured;
   String? get emailError => _emailError;
   String? get passwordError => _passwordError;
 
@@ -74,17 +78,80 @@ class LoginProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> sendVerificationCode(String email) async {
+    EmailOTP.config(
+      appName: 'Figma News App',
+      appEmail: 'noreply@figmanewsapp.com',
+      otpLength: 4,
+      expiry: 50000, // milliseconds
+    );
+
+    await EmailOTP.sendOTP(email: email);
+  }
+
+  Future<void> updatePassword(
+      String newPassword, String newRePassword, BuildContext context) async {
+    if (newPassword != newRePassword) {
+      showErrorSnackbar(context, AppTexts.notMatchPassword);
+      return;
+    }
+
+    try {
+      _isLoading = true;
+      notifyListeners();
+
+      final user = _auth.currentUser;
+      if (user != null) {
+        await user.updatePassword(newPassword);
+        showSuccessSnackbar(context, AppTexts.updatePasswordSuccess);
+      } else {
+        showErrorSnackbar(context, AppTexts.updatePasswordError);
+      }
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case AppTexts.weakPasswordCode:
+          showErrorSnackbar(context, AppTexts.weakPasswordError);
+          break;
+        default:
+          showErrorSnackbar(
+              context, "${AppTexts.defaultUpdatePasswordError} ${e.message}");
+      }
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> verifyCode(String code) async {
+    return EmailOTP.verifyOTP(otp: code);
+  }
+
   void togglePasswordVisibility() {
     _isPasswordObscured = !_isPasswordObscured;
     notifyListeners();
   }
 
+  void toggleBottomSheetPasswordVisibility() {
+    _isBottomSheetPasswordObscured = !_isBottomSheetPasswordObscured;
+    notifyListeners();
+  }
+
   void showErrorSnackbar(BuildContext context, String message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      backgroundColor: Colors.red,
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomSnackbar(message: message);
+      },
     );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void showSuccessSnackbar(BuildContext context, String message) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomSnackbar(message: message, color: Colors.green);
+      },
+    );
   }
 
   void clearErrors() {

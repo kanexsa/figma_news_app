@@ -15,6 +15,8 @@ class AppTexts {
   static const String nameHintText = "Name";
   static const String emailHintText = "Email";
   static const String passwordHintText = "Password";
+  static const String updatePassword = "Update Password";
+  static const String rePasswordHintText = "Re Password";
   static const String privacyPolicy =
       "I agree with the Terms of Service & Privacy Policy";
   static const String haveAnAccountLogin = "Have an account? Log in";
@@ -49,4 +51,18 @@ class AppTexts {
   static const String bottomSheetForgotPasswordDesc =
       "Enter your email for the verification proccess, we will send 4 digits code to your email.";
   static const String continueText = "Continue";
+  static const String enterDigit = "Enter 4 Digits Code";
+  static const String enterDigitDesc =
+      "Enter the 4 digits code that you received on your email.";
+  static const String failOTPVerify = "OTP verification failed";
+  static const String notFoundEmail = "Email address not found";
+  static const String resetPassword = "Reset Password";
+  static const String resetDescPassword =
+      "Set the new password for your account so you can login and access all the features.";
+  static const String notMatchPassword = "Passwords do not match";
+  static const String updatePasswordError = "No user is signed in";
+  static const String weakPasswordCode = "weak-password";
+  static const String weakPasswordError = "The new password is too weak";
+  static const String updatePasswordSuccess = "Password updated successfully";
+  static const String defaultUpdatePasswordError = "Failed to update password";
 }
