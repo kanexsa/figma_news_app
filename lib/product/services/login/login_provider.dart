@@ -1,4 +1,5 @@
 import 'package:email_otp/email_otp.dart';
+import 'package:figma_news_app/core/routes/app_routes.dart';
 import 'package:figma_news_app/core/utils/app_texts.dart';
 import 'package:figma_news_app/core/widgets/custom_snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,6 +11,7 @@ class LoginProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool _isPasswordObscured = true;
   bool _isBottomSheetPasswordObscured = true;
+  bool _isBottomSheetRePasswordObscured = true;
   String? _emailError;
   String? _passwordError;
 
@@ -17,6 +19,7 @@ class LoginProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isPasswordObscured => _isPasswordObscured;
   bool get isBottomSheetPasswordObscured => _isBottomSheetPasswordObscured;
+  bool get isBottomSheetRePasswordObscured => _isBottomSheetRePasswordObscured;
   String? get emailError => _emailError;
   String? get passwordError => _passwordError;
 
@@ -39,8 +42,6 @@ class LoginProvider extends ChangeNotifier {
 
       if (_auth.currentUser != null && !_auth.currentUser!.emailVerified) {
         await _auth.signOut();
-        showErrorSnackbar(context, AppTexts.notVerifyEmailCheck);
-        throw AppTexts.notVerifyEmail;
       }
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -60,11 +61,18 @@ class LoginProvider extends ChangeNotifier {
           showErrorSnackbar(context, AppTexts.defaultError);
       }
       notifyListeners();
-    } catch (e) {
-      showErrorSnackbar(context, AppTexts.defaultLoginError);
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> verifyEmailAndNavigate(BuildContext context) async {
+    final user = _auth.currentUser;
+    if (user != null && user.emailVerified) {
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
+    } else {
+      showErrorSnackbar(context, AppTexts.notVerifyEmailCheck);
     }
   }
 
@@ -133,6 +141,11 @@ class LoginProvider extends ChangeNotifier {
 
   void toggleBottomSheetPasswordVisibility() {
     _isBottomSheetPasswordObscured = !_isBottomSheetPasswordObscured;
+    notifyListeners();
+  }
+
+  void toggleBottomSheetRePasswordVisibility() {
+    _isBottomSheetRePasswordObscured = !_isBottomSheetRePasswordObscured;
     notifyListeners();
   }
 
