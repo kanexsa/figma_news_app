@@ -115,6 +115,7 @@ class _LoginViewState extends State<LoginView> {
                         _passwordController.text,
                         context,
                       );
+                      await loginProvider.verifyEmailAndNavigate(context);
                     } catch (e) {
                       loginProvider.showErrorSnackbar(context, e.toString());
                     }
@@ -213,101 +214,110 @@ class _LoginViewState extends State<LoginView> {
                                                                 .symmetric(
                                                                 horizontal: 16,
                                                                 vertical: 24),
-                                                        child: Column(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            const TitleText(
-                                                                titleText: AppTexts
-                                                                    .resetPassword),
-                                                            const SizedBox(
-                                                              height: 8,
-                                                            ),
-                                                            const DescText(
-                                                                descText: AppTexts
-                                                                    .resetDescPassword),
-                                                            const SizedBox(
-                                                              height: 16,
-                                                            ),
-                                                            CustomInputText(
-                                                              labelText: AppTexts
-                                                                  .passwordHintText,
-                                                              controller:
-                                                                  _bottomSheetPasswordController,
-                                                              obscureText:
-                                                                  loginProvider
-                                                                      .isBottomSheetPasswordObscured,
-                                                              suffixIcon:
-                                                                  InkWell(
-                                                                onTap: () {
-                                                                  loginProvider
-                                                                      .toggleBottomSheetPasswordVisibility();
-                                                                },
-                                                                child: Icon(
-                                                                  loginProvider
-                                                                          .isBottomSheetPasswordObscured
-                                                                      ? Icons
-                                                                          .visibility_off
-                                                                      : Icons
-                                                                          .visibility,
+                                                        child: Consumer<
+                                                            LoginProvider>(
+                                                          builder: (context,
+                                                              value, child) {
+                                                            return Column(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                const TitleText(
+                                                                    titleText:
+                                                                        AppTexts
+                                                                            .resetPassword),
+                                                                const SizedBox(
+                                                                  height: 8,
                                                                 ),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 8,
-                                                            ),
-                                                            CustomInputText(
-                                                              labelText: AppTexts
-                                                                  .rePasswordHintText,
-                                                              controller:
-                                                                  _bottomSheetRePasswordController,
-                                                              obscureText:
-                                                                  loginProvider
-                                                                      .isBottomSheetPasswordObscured,
-                                                              suffixIcon:
-                                                                  InkWell(
-                                                                onTap: () {
-                                                                  loginProvider
-                                                                      .toggleBottomSheetPasswordVisibility();
-                                                                },
-                                                                child: Icon(
-                                                                  loginProvider
-                                                                          .isBottomSheetPasswordObscured
-                                                                      ? Icons
-                                                                          .visibility_off
-                                                                      : Icons
-                                                                          .visibility,
+                                                                const DescText(
+                                                                    descText:
+                                                                        AppTexts
+                                                                            .resetDescPassword),
+                                                                const SizedBox(
+                                                                  height: 16,
                                                                 ),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 12,
-                                                            ),
-                                                            Center(
-                                                              child:
-                                                                  CustomButton(
-                                                                text: AppTexts
-                                                                    .updatePassword,
-                                                                function:
-                                                                    () async {
-                                                                  final newPassword =
-                                                                      _bottomSheetPasswordController
-                                                                          .text;
-                                                                  final repassword =
-                                                                      _bottomSheetRePasswordController
-                                                                          .text;
+                                                                CustomInputText(
+                                                                  labelText:
+                                                                      AppTexts
+                                                                          .passwordHintText,
+                                                                  controller:
+                                                                      _bottomSheetPasswordController,
+                                                                  obscureText:
+                                                                      loginProvider
+                                                                          .isBottomSheetPasswordObscured,
+                                                                  suffixIcon:
+                                                                      InkWell(
+                                                                    onTap: () {
+                                                                      loginProvider
+                                                                          .toggleBottomSheetPasswordVisibility();
+                                                                    },
+                                                                    child: Icon(
+                                                                      loginProvider.isBottomSheetPasswordObscured
+                                                                          ? Icons
+                                                                              .visibility_off
+                                                                          : Icons
+                                                                              .visibility,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 8,
+                                                                ),
+                                                                CustomInputText(
+                                                                  labelText:
+                                                                      AppTexts
+                                                                          .rePasswordHintText,
+                                                                  controller:
+                                                                      _bottomSheetRePasswordController,
+                                                                  obscureText:
+                                                                      loginProvider
+                                                                          .isBottomSheetRePasswordObscured,
+                                                                  suffixIcon:
+                                                                      InkWell(
+                                                                    onTap: () {
+                                                                      loginProvider
+                                                                          .toggleBottomSheetRePasswordVisibility();
+                                                                    },
+                                                                    child: Icon(
+                                                                      loginProvider.isBottomSheetRePasswordObscured
+                                                                          ? Icons
+                                                                              .visibility_off
+                                                                          : Icons
+                                                                              .visibility,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 12,
+                                                                ),
+                                                                Center(
+                                                                  child:
+                                                                      CustomButton(
+                                                                    text: AppTexts
+                                                                        .updatePassword,
+                                                                    function:
+                                                                        () async {
+                                                                      final newPassword =
+                                                                          _bottomSheetPasswordController
+                                                                              .text;
+                                                                      final repassword =
+                                                                          _bottomSheetRePasswordController
+                                                                              .text;
 
-                                                                  await loginProvider.updatePassword(
-                                                                      newPassword,
-                                                                      repassword,
-                                                                      context);
-                                                                },
-                                                              ),
-                                                            )
-                                                          ],
+                                                                      await loginProvider.updatePassword(
+                                                                          newPassword,
+                                                                          repassword,
+                                                                          context);
+                                                                    },
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            );
+                                                          },
                                                         ),
                                                       );
                                                     },
