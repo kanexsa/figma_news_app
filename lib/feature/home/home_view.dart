@@ -8,6 +8,36 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: const ClipRRect(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+        child: BottomAppBar(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Icon(
+                Icons.home,
+                color: Colors.green,
+                size: 30, // Aktif simge boyutu
+              ),
+              Icon(
+                Icons.favorite,
+                color: Colors.grey, // Inaktif simge rengi
+                size: 24, // Inaktif simge boyutu
+              ),
+              Icon(
+                Icons.book,
+                color: Colors.grey, // Inaktif simge rengi
+                size: 24, // Inaktif simge boyutu
+              ),
+              Icon(
+                Icons.message,
+                color: Colors.grey, // Inaktif simge rengi
+                size: 24, // Inaktif simge boyutu
+              ),
+            ],
+          ),
+        ),
+      ),
       body: BackgroundContainer(
         child: Column(
           children: [
@@ -97,31 +127,249 @@ class HomeView extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    // Eklemek istediğiniz diğer öğeler buraya
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                          const Text("Live Doctors",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold)),
-                          // Diğer öğeler
-                          Container(
-                            height: 150,
-                            color: Colors.blue,
-                            margin: const EdgeInsets.symmetric(vertical: 10),
-                            child: const Center(child: Text('Doctor 1')),
+                          const Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Text("Live Doctors",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold)),
                           ),
-                          Container(
-                            height: 150,
-                            color: Colors.red,
-                            margin: const EdgeInsets.symmetric(vertical: 10),
-                            child: const Center(child: Text('Doctor 2')),
+                          SizedBox(
+                            height: 200, // Kartların yüksekliği
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: 6, // Doktor sayısı
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  width: 150, // Kartların genişliği
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 8.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 6.0,
+                                        offset: Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              const BorderRadius.vertical(
+                                                  top: Radius.circular(15.0)),
+                                          child: Image.network(
+                                            'https://via.placeholder.com/150',
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Doctor ${index + 1}",
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4.0),
+                                            const Text(
+                                              "Specialty",
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
                           ),
-                          // Devam eden diğer öğeler
+                          const SizedBox(height: 16.0), // Boşluk
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _buildIconCard(Icons.local_hospital, Colors.blue),
+                              _buildIconCard(Icons.favorite, Colors.green),
+                              _buildIconCard(Icons.visibility, Colors.orange),
+                              _buildIconCard(Icons.child_care, Colors.red),
+                            ],
+                          ),
                         ],
                       ),
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(left: 24.0),
+                          child: Text(
+                            "Popular Doctor",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text("See all"),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: SizedBox(
+                        height: 240,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 5, // Doktor sayısı
+                          itemBuilder: (context, index) {
+                            return Container(
+                              width: 150,
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15.0),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 6.0,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    child: ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(
+                                          top: Radius.circular(15.0)),
+                                      child: Image.network(
+                                        'https://via.placeholder.com/150',
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Dr. Doctor ${index + 1}",
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4.0),
+                                        const Text(
+                                          "Specialty",
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(left: 24.0),
+                          child: Text(
+                            "Feature Doctor",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text("See all"),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: SizedBox(
+                        height: 120,
+                        child: ListView.builder(
+                          itemCount: 6,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Container(
+                              width: 120,
+                              margin: const EdgeInsets.symmetric(horizontal: 8),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(15),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 6,
+                                        offset: Offset(0, 2))
+                                  ]),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                        'https://via.placeholder.com/150'),
+                                    radius: 30,
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    "Dr. Name ${index + 1}",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4.0),
+                                  const Text(
+                                    "\$20.00/hr",
+                                    style: TextStyle(
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -129,6 +377,25 @@ class HomeView extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildIconCard(IconData icon, Color color) {
+    return Container(
+      width: 80,
+      height: 80,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(15.0),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 6.0,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Icon(icon, color: Colors.white, size: 30),
     );
   }
 }
