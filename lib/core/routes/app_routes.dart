@@ -1,6 +1,7 @@
 import 'package:figma_news_app/feature/home/home_view.dart';
 import 'package:figma_news_app/feature/login/login_view.dart';
 import 'package:figma_news_app/feature/onboard/onboard_view.dart';
+import 'package:figma_news_app/feature/profile/profile_view.dart';
 import 'package:figma_news_app/feature/signup/signup_view.dart';
 import 'package:figma_news_app/feature/splash/splash_view.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ class AppRoutes {
   static const String login = '/login';
   static const String signup = '/signup';
   static const String home = '/home';
+  static const String profile = '/profile';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -24,6 +26,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const SignupView());
       case home:
         return MaterialPageRoute(builder: (_) => const HomeView());
+      case profile:
+        return MaterialPageRoute(builder: (_) => const ProfileView());
       default:
         throw const FormatException("Route not found! Check routes again.");
     }
