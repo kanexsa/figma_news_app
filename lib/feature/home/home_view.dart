@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:figma_news_app/core/constants/app_palette.dart';
 import 'package:figma_news_app/core/routes/app_routes.dart';
 import 'package:figma_news_app/core/widgets/background_container.dart';
 import 'package:figma_news_app/product/services/home/doctor_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -349,19 +351,22 @@ class HomeView extends StatelessWidget {
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (BuildContext context, int index) {
                                 final doctor = value.doctors[index];
+
                                 return Container(
                                   width: 140,
                                   margin:
                                       const EdgeInsets.symmetric(horizontal: 8),
                                   decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(15),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                            color: Colors.black12,
-                                            blurRadius: 6,
-                                            offset: Offset(0, 2))
-                                      ]),
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 6,
+                                        offset: Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -372,12 +377,21 @@ class HomeView extends StatelessWidget {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Icon(
-                                              Icons.favorite,
-                                              color: doctor.isLive
-                                                  ? Colors.red
-                                                  : Colors.grey,
-                                              size: 20,
+                                            InkWell(
+                                              onTap: () {
+                                                Provider.of<DoctorProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .toggleFavoriteDoctor(
+                                                        doctor);
+                                              },
+                                              child: Icon(
+                                                Icons.favorite,
+                                                color: value.isFavorite(doctor)
+                                                    ? Colors.red
+                                                    : Colors.grey,
+                                                size: 20,
+                                              ),
                                             ),
                                             Text(
                                               "⭐ ${doctor.rating}",
@@ -394,9 +408,7 @@ class HomeView extends StatelessWidget {
                                             'https://via.placeholder.com/150'),
                                         radius: 20,
                                       ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
+                                      const SizedBox(height: 10),
                                       Text(
                                         doctor.name,
                                         style: const TextStyle(
@@ -410,7 +422,6 @@ class HomeView extends StatelessWidget {
                                           color: Colors.green,
                                         ),
                                       ),
-                                      const SizedBox(height: 4.0),
                                     ],
                                   ),
                                 );
