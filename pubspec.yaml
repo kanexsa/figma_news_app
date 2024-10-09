@@ -41,6 +41,7 @@ dependencies:
   provider: ^6.1.2
   lottie: ^3.1.2
   email_otp: ^3.0.2
+  shared_preferences: ^2.3.2
 
 dev_dependencies:
   flutter_test:

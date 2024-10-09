@@ -1,28 +1,41 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class DoctorModel {
+  final String id;
   final String name;
   final String specialty;
   final double rating;
   final double hourlyRate;
   final bool isLive;
-  final bool isFavorite;
 
   DoctorModel({
+    required this.id,
     required this.name,
     required this.specialty,
     required this.rating,
     required this.hourlyRate,
     required this.isLive,
-    required this.isFavorite,
   });
 
-  factory DoctorModel.fromJson(Map<String, dynamic> json) {
+  factory DoctorModel.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
     return DoctorModel(
-      name: json['name'],
-      specialty: json['specialty'],
-      rating: json['rating'].toDouble(),
-      hourlyRate: json['hourlyRate'].toDouble(),
-      isLive: json['isLive'],
-      isFavorite: json['isFavorite'],
+      id: doc.id, // Firestore döküman ID'si kullanılıyor
+      name: data['name'] ?? '',
+      specialty: data['specialty'] ?? '',
+      rating: data['rating']?.toDouble() ?? 0.0,
+      hourlyRate: data['hourlyRate']?.toDouble() ?? 0.0,
+      isLive: data['isLive'] ?? false,
     );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'name': name,
+      'specialty': specialty,
+      'rating': rating,
+      'hourlyRate': hourlyRate,
+      'isLive': isLive,
+    };
   }
 }
