@@ -65,4 +65,11 @@ class AppTexts {
   static const String weakPasswordError = "The new password is too weak";
   static const String updatePasswordSuccess = "Password updated successfully";
   static const String defaultUpdatePasswordError = "Failed to update password";
+  static const String hiHandwerker = "Hi Handwerker!";
+  static const String findYourDoctor = "Find Your Doctor!";
+  static const String search = "Search...";
+  static const String liveDoctors = "Live Doctors";
+  static const String popularDoctor = "Popular Doctor";
+  static const String featureDoctor = "Popular Doctor";
+  static const String seeAll = "See all";
 }

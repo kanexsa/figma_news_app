@@ -1,9 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:figma_news_app/core/constants/app_palette.dart';
 import 'package:figma_news_app/core/routes/app_routes.dart';
+import 'package:figma_news_app/core/utils/app_texts.dart';
 import 'package:figma_news_app/core/widgets/background_container.dart';
 import 'package:figma_news_app/product/services/home/doctor_provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +12,9 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Provider.of<DoctorProvider>(context, listen: false).fetchDoctors();
+    Provider.of<DoctorProvider>(context, listen: false).loadFavoriteDoctors();
+    Provider.of<DoctorProvider>(context, listen: false).fetchPopularDoctors();
+    Provider.of<DoctorProvider>(context, listen: false).fetchLiveDoctors();
     return Scaffold(
       bottomNavigationBar: const ClipRRect(
         borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
@@ -76,7 +78,7 @@ class HomeView extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text(
-                                  "Hi Handwerker!",
+                                  AppTexts.hiHandwerker,
                                   style: TextStyle(
                                     color: AppPalette.whiteColor,
                                     fontSize: 20,
@@ -94,7 +96,7 @@ class HomeView extends StatelessWidget {
                           const Padding(
                             padding: EdgeInsets.only(left: 20.0, top: 8.0),
                             child: Text(
-                              "Find Your Doctor!",
+                              AppTexts.findYourDoctor,
                               style: TextStyle(
                                 color: AppPalette.whiteColor,
                                 fontSize: 22,
@@ -106,8 +108,7 @@ class HomeView extends StatelessWidget {
                       ),
                     ),
                     Positioned(
-                      top:
-                          140, // Adjust this value to position the TextField correctly
+                      top: 140,
                       left: MediaQuery.of(context).size.width * 0.05,
                       right: MediaQuery.of(context).size.width * 0.05,
                       child: Container(
@@ -126,7 +127,7 @@ class HomeView extends StatelessWidget {
                         child: const TextField(
                           decoration: InputDecoration(
                             prefixIcon: Icon(Icons.search),
-                            hintText: 'Search...',
+                            hintText: AppTexts.search,
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(
                                 vertical: 12.0, horizontal: 16.0),
@@ -150,19 +151,20 @@ class HomeView extends StatelessWidget {
                             children: [
                               const Padding(
                                 padding: EdgeInsets.all(16.0),
-                                child: Text("Live Doctors",
+                                child: Text(AppTexts.liveDoctors,
                                     style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold)),
                               ),
                               SizedBox(
-                                height: 200, // Kartların yüksekliği
+                                height: 200,
                                 child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: 6, // Doktor sayısı
+                                  itemCount: value.liveDoctors.length,
                                   itemBuilder: (context, index) {
+                                    final liveDoctor = value.liveDoctors[index];
                                     return Container(
-                                      width: 150, // Kartların genişliği
+                                      width: 150,
                                       margin: const EdgeInsets.symmetric(
                                           horizontal: 8.0, vertical: 8.0),
                                       decoration: BoxDecoration(
@@ -198,15 +200,15 @@ class HomeView extends StatelessWidget {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  "Doctor ${index + 1}",
+                                                  liveDoctor.name,
                                                   style: const TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
                                                 const SizedBox(height: 4.0),
-                                                const Text(
-                                                  "Specialty",
-                                                  style: TextStyle(
+                                                Text(
+                                                  liveDoctor.specialty,
+                                                  style: const TextStyle(
                                                     color: Colors.grey,
                                                   ),
                                                 ),
@@ -241,7 +243,7 @@ class HomeView extends StatelessWidget {
                             const Padding(
                               padding: EdgeInsets.only(left: 24.0),
                               child: Text(
-                                "Popular Doctor",
+                                AppTexts.popularDoctor,
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -250,7 +252,7 @@ class HomeView extends StatelessWidget {
                             ),
                             TextButton(
                               onPressed: () {},
-                              child: const Text("See all"),
+                              child: const Text(AppTexts.seeAll),
                             ),
                           ],
                         ),
@@ -260,8 +262,10 @@ class HomeView extends StatelessWidget {
                             height: 240,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
-                              itemCount: 5, // Doktor sayısı
+                              itemCount: value.popularDoctors.length,
                               itemBuilder: (context, index) {
+                                final popularDoctor =
+                                    value.popularDoctors[index];
                                 return Container(
                                   width: 150,
                                   margin: const EdgeInsets.symmetric(
@@ -298,15 +302,15 @@ class HomeView extends StatelessWidget {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "Dr. Doctor ${index + 1}",
+                                              popularDoctor.name,
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
                                             const SizedBox(height: 4.0),
-                                            const Text(
-                                              "Specialty",
-                                              style: TextStyle(
+                                            Text(
+                                              popularDoctor.specialty,
+                                              style: const TextStyle(
                                                 color: Colors.grey,
                                               ),
                                             ),
@@ -326,7 +330,7 @@ class HomeView extends StatelessWidget {
                             const Padding(
                               padding: EdgeInsets.only(left: 24.0),
                               child: Text(
-                                "Feature Doctor",
+                                AppTexts.featureDoctor,
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -335,7 +339,7 @@ class HomeView extends StatelessWidget {
                             ),
                             TextButton(
                               onPressed: () {},
-                              child: const Text("See all"),
+                              child: const Text(AppTexts.seeAll),
                             ),
                           ],
                         ),
