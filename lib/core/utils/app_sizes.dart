@@ -13,4 +13,26 @@ class AppSizes {
   static const double textInputRadius = 16.0;
   static const double textInputTextSizes = 13.0;
   static const double privacyPolicyTextSizes = 12;
+  static const double iconActiveSize = 30.0;
+  static const double iconInactiveSize = 24.0;
+  static const double headerHeight = 180.0;
+  static const double homeHeight = 50.0;
+  static const double homeTitleSize = 22.0;
+  static const double searchTopSize = 140.0;
+  static const double searchHeightSize = 48.0;
+  static const double searchBorderSize = 25.0;
+  static const double searchBlurSize = 25.0;
+  static const double featureDoctorSize = 120.0;
+  static const double featureDoctorContainerSize = 140.0;
+  static const double featureDoctorContainerMarginHorSize = 8.0;
+  static const double featureDoctorContainerBorderSize = 15.0;
+  static const double featureDoctorContainerBlurSize = 6.0;
+  static const double featureDoctorCircleAvatarSize = 20;
+  static const double featureDoctorMinSize = 4.0;
+  static const double popularDoctorContainerSize = 150.0;
+  static const double popularDoctorSize = 240.0;
+  static const double liveDoctorSize = 200.0;
+  static const double liveTextTopLeftSize = 10;
+  static const double liveTextBorderSize = 5.0;
+  static const double iconCardWidthHeightSize = 80.0;
 }

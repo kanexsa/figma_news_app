@@ -70,6 +70,7 @@ class AppTexts {
   static const String search = "Search...";
   static const String liveDoctors = "Live Doctors";
   static const String popularDoctor = "Popular Doctor";
-  static const String featureDoctor = "Popular Doctor";
+  static const String featureDoctor = "Feature Doctor";
   static const String seeAll = "See all";
+  static const String live = "LIVE";
 }

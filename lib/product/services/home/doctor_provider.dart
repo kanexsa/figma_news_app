@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:figma_news_app/core/routes/app_routes.dart';
 import 'package:figma_news_app/product/models/doctor_model.dart';
 import 'package:figma_news_app/product/services/favorites/doctor_favorite.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DoctorProvider with ChangeNotifier {
   List<DoctorModel> _doctors = [];
@@ -17,11 +19,21 @@ class DoctorProvider with ChangeNotifier {
   List<String> get favoriteDoctors => _favoriteDoctors;
 
   DoctorProvider() {
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId != null) {
       _favoriteService = FavoriteDoctorsService(userId);
-      loadFavoriteDoctors();
+      await loadFavoriteDoctors();
+    } else {
+      _doctors = [];
+      _popularDoctors = [];
+      _liveDoctors = [];
+      _favoriteDoctors = [];
     }
+    notifyListeners();
   }
 
   Future<void> fetchDoctors() async {
@@ -35,7 +47,7 @@ class DoctorProvider with ChangeNotifier {
   Future<void> fetchPopularDoctors() async {
     final snapshot = await FirebaseFirestore.instance
         .collection('doctors')
-        .where('rating', isGreaterThanOrEqualTo: 4.8)
+        .where('rating', isGreaterThanOrEqualTo: 4.5)
         .get();
     _popularDoctors =
         snapshot.docs.map((doc) => DoctorModel.fromFirestore(doc)).toList();
@@ -73,10 +85,16 @@ class DoctorProvider with ChangeNotifier {
     return _favoriteDoctors.contains(doctor.id);
   }
 
-  void logout() {
-    FirebaseAuth.instance.signOut();
-    //memoryde veri kaldıysa onu temizlemek amacıyla sıfırlanır.
+  Future<void> logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+
+    _doctors = [];
+    _popularDoctors = [];
+    _liveDoctors = [];
     _favoriteDoctors = [];
+
     notifyListeners();
+
+    Navigator.pushReplacementNamed(context, AppRoutes.login);
   }
 }
